@@ -3,6 +3,8 @@ FROM ruby:2.1.2
 # some of ruby's build scripts are written in ruby
 # we purge this later to make sure our final image uses what we just built
 RUN echo "export phantomjs=/usr/bin/phantomjs" > .bashrc
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 9D6D8F6BC857C906
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y libfreetype6 libfontconfig1 nodejs npm libnss3-dev libgconf-2-4 chrome chromedriver && \
