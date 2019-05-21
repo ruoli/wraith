@@ -43,16 +43,6 @@ RUN apt-get install -y ttf-freefont ttf-mscorefonts-installer ttf-bitstream-vera
    apt-get autoremove -y && \
    apt-get clean all
 
-# Install ChromeDriver.
-RUN mkdir /chromedriver
-WORKDIR /chromedriver
-ENV CHROME_DRIVER_VERSION=74.0.3729.6
-RUN wget -N http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip -P ~/
-RUN unzip ~/chromedriver_linux64.zip -d ~/
-RUN rm ~/chromedriver_linux64.zip
-RUN mv -f ~/chromedriver /usr/local/bin/chromedriver
-RUN chown root:root /usr/local/bin/chromedriver
-RUN chmod 0755 /usr/local/bin/chromedriver
 
 #Install Wraith
 RUN mkdir /app
@@ -63,6 +53,11 @@ RUN bundle install --system
 RUN gem build -V wraith
 RUN gem install wraith
 
+RUN chromedriver-update 74.0.3729.6
+RUN chromedriver -version
+
 # Test step, to check it's installed correctly
 RUN wraith
+RUN google-chrome -version
+RUN chromedriver -version
 ENTRYPOINT [ "wraith" ]

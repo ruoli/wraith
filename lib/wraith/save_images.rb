@@ -86,7 +86,7 @@ class Wraith::SaveImages
         end
       rescue => e
         logger.error "#{e}\n  URL = #{url}"
-        create_invalid_image(filename, width, invalid_image_name)
+        create_invalid_image(filename, width, "invalid1.jpg")
       end
     end
   end
