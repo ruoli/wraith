@@ -1,29 +1,68 @@
 FROM ruby:2.6-stretch
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 # some of ruby's build scripts are written in ruby
 # we purge this later to make sure our final image uses what we just built
 RUN echo "export phantomjs=/usr/bin/phantomjs" > .bashrc
-#RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 9D6D8F6BC857C906
-#RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010
+
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get update && \
     apt-get install -y build-essential nodejs libfreetype6 libfontconfig1 libnss3-dev libgconf-2-4 && \
-    apt-get install -y chromedriver npm imagemagick && \
+    apt-get install -y npm imagemagick && \
     apt-get autoremove -y && \
     apt-get clean all
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN apt install -y ./google-chrome-stable_current_amd64.deb
-RUN rm ./google-chrome-stable_current_amd64.deb
+
+RUN set -xe \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl socat \
+    && apt-get install -y --no-install-recommends xvfb x11vnc fluxbox xterm \
+    && apt-get install -y --no-install-recommends sudo \
+    && apt-get install -y --no-install-recommends supervisor \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN set -xe \
+    && curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-cache showpkg google-chrome-stable \
+    && apt-get install -y google-chrome-stable=74.0.3729.157-1 \
+    && rm -rf /var/lib/apt/lists/*
+
+
 RUN npm config set user 0 && npm config set unsafe-perm true
 RUN npm install npm
 RUN npm install -g phantomjs-prebuilt@2.1.16 casperjs@1.1.4
-RUN gem install wraith
 RUN gem install aws-sdk
 
 # Make sure decent fonts are installed. Thanks to http://www.dailylinuxnews.com/blog/2014/09/things-to-do-after-installing-debian-jessie/
 RUN echo "deb http://ftp.us.debian.org/debian jessie main contrib non-free" | tee -a /etc/apt/sources.list
 RUN echo "deb http://security.debian.org/ jessie/updates contrib non-free" | tee -a /etc/apt/sources.list
 RUN apt-get update
-RUN apt-get install -y ttf-freefont ttf-mscorefonts-installer ttf-bitstream-vera ttf-dejavu ttf-liberation
+RUN apt-get install -y ttf-freefont ttf-mscorefonts-installer ttf-bitstream-vera ttf-dejavu ttf-liberation && \
+   apt-get autoremove -y && \
+   apt-get clean all
 
+# Install ChromeDriver.
+RUN mkdir /chromedriver
+WORKDIR /chromedriver
+ENV CHROME_DRIVER_VERSION=74.0.3729.6
+RUN wget -N http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip -P ~/
+RUN unzip ~/chromedriver_linux64.zip -d ~/
+RUN rm ~/chromedriver_linux64.zip
+RUN mv -f ~/chromedriver /usr/local/bin/chromedriver
+RUN chown root:root /usr/local/bin/chromedriver
+RUN chmod 0755 /usr/local/bin/chromedriver
+
+#Install Wraith
+RUN mkdir /app
+COPY . /app
+WORKDIR /app
+
+RUN bundle install --system
+RUN gem build -V wraith
+RUN gem install wraith
+
+# Test step, to check it's installed correctly
+RUN wraith
 ENTRYPOINT [ "wraith" ]

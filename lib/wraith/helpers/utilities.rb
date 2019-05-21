@@ -45,6 +45,7 @@ def list_debug_information
   logger.debug "  PhantomJS version:  #{phantomjs_version}"
   logger.debug "  chromedriver version:  #{chromedriver_version}"
   logger.debug "  CasperJS version:   #{casperjs_version}"
+  logger.debug "  Custom Wraith version:  1"
   # @TODO - add a SlimerJS equivalent
   logger.debug "#################################################"
 end
