@@ -129,11 +129,11 @@ class Wraith::SaveImages
   def capture_image_selenium(screen_sizes, url, file_name, selector, global_before_capture, path_before_capture)
     driver = get_driver
     driver.manage.timeouts.implicit_wait = 10;
-    screen_sizes.to_s.split(",").each do |screen_size|
+    screen_sizes.to_s.split(",").each do |screen_sizes|
       for attempt in 1..3 do
         begin
-          width, height = screen_size.split("x")
-          new_file_name = file_name.sub('MULTI', screen_size)
+          width, height = screen_sizes.split("x")
+          new_file_name = file_name.sub('MULTI', screen_sizes)
           driver.manage.window.resize_to(width, height || 1500)
           driver.navigate.to url
           driver.manage.timeouts.implicit_wait = wraith.settle
@@ -144,7 +144,7 @@ class Wraith::SaveImages
           crop_selector(driver, selector, new_file_name) if selector && selector.length > 0
           break
         rescue Net::ReadTimeout => e
-          logger.error "Got #{e} on attempt #{attempt} at screen size #{screensize}. URL = #{url}"
+          logger.error "Got #{e} on attempt #{attempt} at screen size #{screen_sizes}. URL = #{url}"
         end
       end
     end
