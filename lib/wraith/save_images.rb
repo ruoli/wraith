@@ -134,7 +134,7 @@ class Wraith::SaveImages
         begin
           width, height = screen_sizes.split("x")
           new_file_name = file_name.sub('MULTI', screen_sizes)
-          driver.manage.window.resize_to(width, height || 1500)
+          driver.manage.window.resize_to(width, height || 3000)
           driver.navigate.to url
           driver.manage.timeouts.implicit_wait = wraith.settle
           driver.execute_script(File.read(global_before_capture)) if global_before_capture
@@ -142,6 +142,7 @@ class Wraith::SaveImages
           resize_to_fit_page(driver) unless height
           driver.save_screenshot(new_file_name)
           crop_selector(driver, selector, new_file_name) if selector && selector.length > 0
+          sleep(6)
           break
         rescue Net::ReadTimeout => e
           logger.error "Got #{e} on attempt #{attempt} at screen size #{screen_sizes}. URL = #{url}"
