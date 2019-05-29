@@ -135,7 +135,7 @@ class Wraith::SaveImages
           begin
             width, height = screen_size.split("x")
             new_file_name = file_name.sub('MULTI', screen_size)
-            #driver.manage.window.resize_to(width, height || 1500)
+            #driver.manage.window.resize_to(width, height || 5000)
             driver.navigate.to url
             driver.manage.timeouts.implicit_wait = wraith.settle
             #driver.execute_script(File.read(global_before_capture)) if global_before_capture
