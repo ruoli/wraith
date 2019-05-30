@@ -104,7 +104,7 @@ class Wraith::SaveImages
         'no-sandbox',
         'device-scale-factor=1',
         'force-device-scale-factor',
-        'window-size=1200,5000',
+        'window-size=1300,5000',
         'hide-scrollbars',
         'ignore-certificate-errors'
       ].each { |arg| options.add_argument("--#{arg}") }
