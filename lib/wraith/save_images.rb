@@ -97,7 +97,8 @@ class Wraith::SaveImages
     when "chrome"
       options = Selenium::WebDriver::Chrome::Options.new
       [
-        '--whitelisted-ips=',
+        'whitelisted-ips=',
+        'enable-logging',
         'disable-dev-shm-usage',
         'disable-gpu',
         'headless',
