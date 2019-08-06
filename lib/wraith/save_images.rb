@@ -143,9 +143,9 @@ class Wraith::SaveImages
             driver.execute_script(File.read(global_before_capture)) if global_before_capture
             #driver.execute_script(File.read(path_before_capture)) if path_before_capture
             #resize_to_fit_page(driver) unless height
+            sleep(10)
             driver.save_screenshot(new_file_name)
             crop_selector(driver, selector, new_file_name) if selector && selector.length > 0
-            #sleep(6)
             break
           rescue Net::ReadTimeout => e
             logger.error "Got #{e} on attempt #{attempt} at screen size #{screensize}. URL = #{url}"
