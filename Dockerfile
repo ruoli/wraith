@@ -26,7 +26,7 @@ RUN set -xe \
     && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
     && apt-get update \
     && apt-cache showpkg google-chrome-stable \
-    && apt-get install -y google-chrome-stable=76.0.3809.100-1 \
+    && apt-get install -y google-chrome-stable=76.0.3809.132-1 \
     && rm -rf /var/lib/apt/lists/*
 
 
@@ -53,7 +53,7 @@ RUN bundle install --system
 RUN gem build -V wraith
 RUN gem install wraith
 
-RUN chromedriver-update 76.0.3809.68
+RUN chromedriver-update 76.0.3809.126
 RUN chromedriver -version
 
 # Test step, to check it's installed correctly
