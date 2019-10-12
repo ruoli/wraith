@@ -8,7 +8,7 @@ RUN echo "export phantomjs=/usr/bin/phantomjs" > .bashrc
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get update && \
-    apt-get install -y build-essential nodejs libfreetype6 libfontconfig1 libnss3-dev libgconf-2-4 && \
+    apt-get install -y build-essential nodejs libfreetype6 libfontconfig1 libnss3-dev libgconf-2-4 zip && \
     apt-get install -y npm imagemagick && \
     apt-get autoremove -y && \
     apt-get clean all
